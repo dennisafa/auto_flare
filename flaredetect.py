@@ -5,7 +5,7 @@ def flaredetectpeak(flux):
     j = 0
     listFlare = []
 
-    baseval = np.std(flux) * 2
+    baseval = 0.005
     #print(baseval)
     noise = get_noise(flux, baseval)
 
@@ -17,28 +17,13 @@ def flaredetectpeak(flux):
                 while j < len(flux) - 1 and flux[j] < flux[j + 1]:
                     peak = flux[j + 1]
                     j += 1
+                
                 else:
-                    temp = flux[j]
-                    base = flux[j]
-                    h = j
-                    while h > 1 and flux[h] > flux[h - 1]:
-                        base = flux[h - 1]  # peak will be point before it rises
-                        h -= 1
-                    else:
-                        if temp - base > noise:
-                            listFlare.append(peak)
+                    listFlare.append(peak)
                     j += 1
+                    
             else:
-                temp = flux[j]
-                base = flux[j]
-                h = j
-                while h > 1 and flux[h] > flux[h-1]:
-                    base = flux[h - 1] # peak will be point before it rises
-                    h -= 1
-                else:
-                    if temp - base > noise:
-                        listFlare.append(peak)
-                j += 1
+                j+=1
         else:
             j += 1
     return listFlare
@@ -82,7 +67,7 @@ def flaredetecttime(time, flux):
     j = 0
     listFlare = []
 
-    baseval = get_std(flux) * 2 # 2 sigma deviation
+    baseval = 0.005
     noise = get_noise(flux, baseval)
     while j < len(flux)-1:
         if flux[j] > baseval:
@@ -91,27 +76,13 @@ def flaredetecttime(time, flux):
                 while j < len(flux) - 1 and flux[j] < flux[j + 1]:
                     j += 1
                 else:
-                    temp = flux[j]
-                    base = flux[j]
-                    h = j
-                    while h > 1 and flux[h] > flux[h - 1]:
-                        base = flux[h - 1]  # peak will be point before it rises
-                        h -= 1
-                    else:
-                        if temp - base > noise:
-                            listFlare.append(time[j])
+                    listFlare.append(time[j])
                     j += 1
+                    
             else:
-                temp = flux[j]
-                base = flux[j]
-                h = j
-                while h > 1 and flux[h] > flux[h-1]:
-                    base = flux[h - 1] # peak will be point before it rises
-                    h -= 1
-                else:
-                    if temp - base > noise:
-                        listFlare.append(time[j])
-                j += 1
+                if flux[j] - flux[j-1] > 0:
+                    listFlare.append(time[j])
+                j+=1
         else:
             j += 1
     return listFlare
